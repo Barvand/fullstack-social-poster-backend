@@ -10,19 +10,23 @@ export const getPosts = (req, res) => {
     if (err) return res.status(403).json({ message: "Token is not valid" });
 
     const q = `
-  SELECT 
-    p.*, 
-    u.id AS userId, 
-    u.name, 
-    u.profilePicture
-    FROM posts AS p
-    JOIN users AS u ON u.id = p.userId
-    LEFT JOIN relationships AS r 
-    ON r.followedUserId = p.userId
-    AND r.followerUserId = ?
-    WHERE r.followerUserId IS NOT NULL  
-    OR p.userId = ?                 
-    ORDER BY p.createdAt DESC
+  SELECT
+  p.*,
+  u.id  AS userId,
+  u.name,
+  u.profilePicture,
+  (SELECT COUNT(*) FROM comments c WHERE c.postId = p.id) AS commentCount
+FROM posts p
+JOIN users u
+  ON u.id = p.userId
+WHERE p.userId = ?                                    -- viewer's own posts
+   OR EXISTS (                                        -- posts by people the viewer follows
+        SELECT 1
+        FROM relationships r
+        WHERE r.followedUserId = p.userId
+          AND r.followerUserId = ?
+   )
+ORDER BY p.createdAt DESC;
 `;
 
     db.query(q, [userInfo.id, userInfo.id], (err, data) => {
