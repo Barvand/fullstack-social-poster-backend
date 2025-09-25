@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 export const getUser = (req, res) => {
   const userId = req.params.userId;
 
-  console.log(userId);
 
   const q = "SELECT * FROM users WHERE id=?";
 

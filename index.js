@@ -28,6 +28,3 @@ app.use("/api/comments", commentsRoutes);
 app.use("/api/likes", likesRoutes);
 app.use("/api/relationships", relationshipRoutes);
 
-app.listen(8800, () => {
-  console.log("Connected to backend on http://localhost:8800");
-});
