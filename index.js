@@ -28,3 +28,4 @@ app.use("/api/comments", commentsRoutes);
 app.use("/api/likes", likesRoutes);
 app.use("/api/relationships", relationshipRoutes);
 
+app.listen(8800, () => console.log("API on :8800"));
